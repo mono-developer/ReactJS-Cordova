@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+     KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+-->
+<html>
+    <head>
+        <!--
+        Customize this policy to fit your own app's needs. For more guidance, see:
+            https://github.com/apache/cordova-plugin-whitelist/blob/master/README.md#content-security-policy
+        Some notes:
+            * gap: is required only on iOS (when using UIWebView) and is needed for JS->native communication
+            * https://ssl.gstatic.com is required only on Android and is needed for TalkBack to function properly
+            * Disables use of inline scripts in order to mitigate risk of XSS vulnerabilities. To change this:
+                * Enable inline JS: add 'unsafe-inline' to default-src
+        -->
+        <!-- <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: gap: https://ssl.gstatic.com 'unsafe-eval'; style-src 'self' 'unsafe-inline'; media-src *; img-src 'self' data: content:;"> -->
+        <!-- <meta http-equiv="Content-Security-Policy" content="default-src * gap://ready file:; style-src 'self' 'unsafe-inline' *; script-src 'self' 'unsafe-inline' 'unsafe-eval' *; img-src *; media-src *"> -->
+        <meta http-equiv="Content-Security-Policy" content="default-src * gap: ws: https://ssl.gstatic.com;style-src * 'unsafe-inline' 'self' data: blob:;script-src * 'unsafe-inline' 'unsafe-eval' data: blob:;img-src * data: blob:;">
+        <meta name="format-detection" content="telephone=no">
+        <meta name="msapplication-tap-highlight" content="no">
+        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
+        <link rel="stylesheet" type="text/css" href="css/index.css">
+        <link rel="stylesheet" type="text/css" charset="UTF-8" href="css/slick.css" />
+        <link rel="stylesheet" type="text/css" charset="UTF-8" href="css/slick-theme.css" />
+        <!-- <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet"> -->
+        <title>Hello World</title>
+
+        <style>
+            body {
+                background-color: white;
+                margin: 0;
+                overflow: hidden;
+                position: fixed;
+                width: 100%;
+                height: 100%;
+                font-family: "Roboto", sans-serif;
+            }
+
+            #bar-header {
+                width: 100%;
+                height: 64px;
+                background-color: #1f68b3;
+                box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 6px, rgba(0, 0, 0, 0.12) 0px 1px 4px;
+            }
+
+            #browser-message {
+                font-size: 24px;
+                line-height: 34px;
+                text-align: center;
+                width: 600px;
+                max-width: 86%;
+                padding: 0 7%;
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                -webkit-transform: translate(-50%, -50%);
+                -moz-transform: translate(-50%, -50%);
+                display: none;
+            }
+
+            #bar-footer {
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                width: 100%;
+                height: 44px;
+                background-color: #1f68b3;
+            }
+
+            .footer-wrapper {
+                display: flex;
+                justify-content: space-between;
+                margin: auto;
+                padding: 10px 25px;
+                flex-wrap: wrap;
+                line-height: 26px;
+                font-size: 16px;
+            }
+
+            .footer-link {
+                white-space: nowrap;
+                cursor: pointer;
+                margin: 0px 10px;
+                color: white !important;
+                text-decoration: none !important;
+            }
+
+            #iframe-backdrop {
+                display: none;
+                position: fixed;
+                height: 100%;
+                width: 100%;
+                top: 0px;
+                left: 0px;
+                background-color: rgba(0, 0, 0, 0.54);
+            }
+
+            #iframe-wrapper {
+                position: relative;
+                width: 100%;
+                max-width: 768px;
+                margin: 0px auto;
+                margin-top: 6vh;
+                height: 88%;
+                box-shadow: rgba(0, 0, 0, 0.25) 0px 14px 45px,
+                rgba(0, 0, 0, 0.22) 0px 10px 18px;
+                border-radius: 2px;
+                background-color: white;
+                overflow: hidden;
+            }
+
+            #iframe-wrapper iframe {
+                position: absolute;
+                width: calc(100% - 20px);
+                height: calc(100% - 86px);
+                top: 30px;
+                left: 10px;
+                border: none;
+            }
+
+            .iframe-button {
+                position: absolute;
+                display: block;
+                bottom: 8px;
+                right: 8px;
+                width: 88px;
+                height: 36px;
+                line-height: 36px;
+                text-align: center;
+                z-index: 9;
+                font-size: 14px;
+                color: #1f68b3 !important;
+                cursor: pointer;
+
+                transition: 0.2s linear background-color !important;
+                -moz-transition: 0.2s linear background-color !important;
+                -webkit-transition: 0.2s linear background-color !important;
+            }
+
+            .iframe-button:hover {
+                background-color: #dfdfdf;
+            }
+
+            .iframe-button:active {
+                background-color: #bbb;
+            }
+
+            .load-spinner {
+                background-color: white !important;
+                border: none !important;
+                border-radius: 0px !important;
+                height: 280px;
+                width: 280px;
+                object-fit: contain;
+                position: absolute;
+                left: 50%;
+                top: 50%;
+                animation: pulsate 1s linear;
+                animation-iteration-count: infinite;
+                opacity: 0.0;
+                margin-left: -140px;
+                margin-top: -140px;
+                animation-direction: alternate;
+                display: block;
+            }
+
+            .browser-icon {
+                width: 42px;
+                vertical-align: middle;
+            }
+
+            #browser-list {
+                text-align: left;
+                line-height: 60px;
+                width: 200px;
+                margin: 0 auto;
+            }
+
+            @keyframes pulsate {
+                0% {
+                    transform: scale(0.9, 0.9);
+                    opacity: 1.0;
+                }
+                50% {
+                    transform: scale(.95, .95);
+                    opacity: .95;
+                }
+                100% {
+                    transform: scale(1.0, 1.0);
+                    opacity: .9;
+                }
+            }
+
+            @media (max-width: 767px) {
+                #bar-footer {
+                    display: none;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <div id="root">
+            <!-- <div id="bar-header"></div>
+            <img id="load-spinner" class="load-spinner" src="branding/caremesh-logo-mark.png" alt="" />
+            <div id="browser-message">
+                <p>
+                CareMesh uses advanced security features and web technologies only available on the market leading browsers.
+                </p>
+                <p>Please log-in using:</p>
+                <p id="browser-list">
+                <img class="browser-icon" src="icons/chrome.png" />&nbsp;&nbsp;&nbsp;&nbsp;Chrome</br>
+                <span id="browser-icon-firefox">
+                    <img class="browser-icon" src="icons/ff.png" />&nbsp;&nbsp;&nbsp;&nbsp;Firefox</br>
+                </span>
+                <img class="browser-icon" src="icons/safari.png" />&nbsp;&nbsp;&nbsp;&nbsp;Safari</br>
+                </p>
+            </div>
+            <div id="bar-footer">
+                <div class="footer-wrapper">
+                <a class="footer-link" href="mailto:info@healthcelerate.com">
+                    Contact Us
+                </a>
+                <a class="footer-link" onclick="onToU()">
+                    Terms of Use
+                </a>
+                <a class="footer-link" onclick="onPP()">
+                    Privacy Policy
+                </a>
+                <a class="footer-link" href="http://www.healthcelerate.com" target="_blank">
+                    &#169; HealthCelerate 2017
+                </a>
+                </div>
+            </div>
+            <div id="iframe-backdrop">
+                <div id="iframe-wrapper">
+                <iframe id="iframe-notice"></iframe>
+                <a class="iframe-button" onclick="onClose()">
+                    OK
+                </a>
+                </div>
+            </div> -->
+        </div>
+        
+        <script type="text/javascript" src="cordova.js"></script>
+        <script type="text/javascript" src="js/SocialSharing.js"></script>
+        <!-- <script type="text/javascript" src="js/index.js"></script> -->
+        <script type="text/javascript" src="js/bundle.js"></script>
+
+        <script>
+            // function loadBundleJS() {
+            //     var fileref = document.createElement('script')
+            //     fileref.setAttribute("type", "text/javascript")
+            //     fileref.setAttribute("src", "js/bundle.js")
+            //     document.getElementsByTagName("head")[0].appendChild(fileref);
+            // }
+            
+            function onToU() {
+                document.getElementById("iframe-notice").src = "terms-of-use.html";
+                document.getElementById("iframe-backdrop").style.display = "block";
+            }
+            
+            function onPP() {
+                document.getElementById("iframe-notice").src = "privacy-policy.html";
+                document.getElementById("iframe-backdrop").style.display = "block";
+            }
+            
+            function onClose() {
+                document.getElementById("iframe-backdrop").style.display = "none";
+            }
+            
+            // loadBundleJS();
+            document.addEventListener("deviceready", onDeviceReady, false);
+            function onDeviceReady() {
+                
+                if (device.platform == "Android"){
+                    StatusBar.backgroundColorByHexString("#000000");
+                }
+                else{
+                    StatusBar.hide();
+                }
+                Keyboard.hideFormAccessoryBar(true);
+                // document.addEventListener('hidekeyboard', onKeyboardHide, false);
+                // document.addEventListener('showkeyboard', onKeyboardShow, false);
+                var notificationOpenedCallback = function(jsonData) {
+                   console.log('notificationOpenedCallback: ' + JSON.stringify(jsonData));
+                };
+
+                // window.plugins.OneSignal
+                //   .startInit("82b12867-b179-4b87-a45d-a47c2515d303", "495326470775")
+                //   .handleNotificationOpened(notificationOpenedCallback)
+                //   .endInit();
+
+                FCMPlugin.onTokenRefresh(function(token){
+                    
+                });
+
+                FCMPlugin.getToken(function(token){
+                    
+                });
+
+                FCMPlugin.onNotification(function(data){
+                    // if(data.wasTapped){
+                    //   //Notification was received on device tray and tapped by the user.
+                    //   alert( JSON.stringify(data) );
+                    // }else{
+                    //   //Notification was received in foreground. Maybe the user needs to be notified.
+                    //   alert( JSON.stringify(data) );
+                    // }
+                    // alert ( "Push Notification Received: " + JSON.stringify(data) );
+                    const badgeNum = parseInt(data.unreadMailCount) + parseInt(data.unreadChatCount);
+                    cordova.plugins.notification.badge.set(badgeNum);
+                });
+
+                FCMPlugin.subscribeToTopic('caremesh_topic');
+            }
+
+            // function onKeyboardHide() {
+            //     console.log('onKeyboardHide');
+            // }
+
+            // function onKeyboardShow() {
+            //     console.log('onKeyboardShow');
+            // }
+        </script>
+    </body>
+</html>

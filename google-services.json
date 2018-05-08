@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "495326470775",
+    "firebase_url": "https://hc-mobile-928db.firebaseio.com",
+    "project_id": "hc-mobile-928db",
+    "storage_bucket": "hc-mobile-928db.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:495326470775:android:2083212479200e7a",
+        "android_client_info": {
+          "package_name": "io.cordova.healthcelerate"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "495326470775-jphei5cc275ir7ib69dfqj49geuvago5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDqbuORsPeT70DiCdg9QRnAL3WT10ORS6A"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
